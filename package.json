@@ -9,8 +9,8 @@
   "scripts": {
     "demo": "node src/cli.js examples/lost-update.json --json out/lost-update.json --html out/lost-update.html",
     "test": "node --test",
-    "check": "node --check src/explorer.js && node --check src/report.js && node --check src/cli.js",
-    "verify": "npm run check && npm test && npm run demo"
+    "check": "node --check src/explorer.js && node --check src/report.js && node --check src/cli.js && node --check scripts/verify-demo.js",
+    "verify": "npm run check && npm test && node scripts/verify-demo.js"
   },
   "engines": {
     "node": ">=20"

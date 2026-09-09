@@ -32,6 +32,10 @@ The generated lost-update report rendered at a 1280 by 720 browser viewport with
 
 The available in-app browser did not expose its viewport override capability, so a narrow visual viewport was not executed. The report includes a 520 px media query and scroll containment for tables, but that rule was not visually claimed as verified.
 
+## CI correction
+
+The first public matrix run `34393252361` failed because `npm run verify` invoked the intentionally unsafe CLI demo. The CLI correctly returned `1`, but the package script treated that expected result as a failed verification command. The verification path was changed to an assertion script that requires the unsafe status and exact fixture metrics while still generating both reports. The CLI exit contract was not weakened.
+
 ## Interpretation
 
 The evidence confirms the implemented finite-state semantics and output paths for the included fixtures. It does not validate production-thread instrumentation, weak-memory behavior, or fidelity of any external system abstraction.
