@@ -1,0 +1,32 @@
+{
+  "name": "@ikteder/weavecheck",
+  "version": "0.1.0",
+  "description": "Dependency-free bounded concurrency model checker with replayable counterexamples",
+  "type": "module",
+  "bin": {
+    "weavecheck": "src/cli.js"
+  },
+  "scripts": {
+    "demo": "node src/cli.js examples/lost-update.json --json out/lost-update.json --html out/lost-update.html",
+    "test": "node --test",
+    "check": "node --check src/explorer.js && node --check src/report.js && node --check src/cli.js",
+    "verify": "npm run check && npm test && npm run demo"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "src",
+    "examples",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "concurrency",
+    "model-checking",
+    "race-condition",
+    "deadlock",
+    "testing"
+  ],
+  "license": "MIT"
+}

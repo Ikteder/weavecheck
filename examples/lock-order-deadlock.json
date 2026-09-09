@@ -1,0 +1,39 @@
+{
+  "name": "Opposite lock ordering",
+  "description": "Workers acquire the same pair of locks in opposite orders, exposing a reachable deadlock.",
+  "initial": {
+    "completed": 0
+  },
+  "locks": ["account-a", "account-b"],
+  "actors": [
+    {
+      "id": "left",
+      "steps": [
+        { "op": "acquire", "lock": "account-a" },
+        { "op": "yield", "label": "allow competing transfer" },
+        { "op": "acquire", "lock": "account-b" },
+        { "op": "read", "from": "completed", "into": "seen" },
+        { "op": "write", "to": "completed", "value": { "add": [{ "local": "seen" }, 1] } },
+        { "op": "release", "lock": "account-b" },
+        { "op": "release", "lock": "account-a" }
+      ]
+    },
+    {
+      "id": "right",
+      "steps": [
+        { "op": "acquire", "lock": "account-b" },
+        { "op": "yield", "label": "allow competing transfer" },
+        { "op": "acquire", "lock": "account-a" },
+        { "op": "read", "from": "completed", "into": "seen" },
+        { "op": "write", "to": "completed", "value": { "add": [{ "local": "seen" }, 1] } },
+        { "op": "release", "lock": "account-a" },
+        { "op": "release", "lock": "account-b" }
+      ]
+    }
+  ],
+  "expect": {
+    "terminal": [
+      { "id": "both-complete", "condition": { "eq": [{ "shared": "completed" }, 2] } }
+    ]
+  }
+}

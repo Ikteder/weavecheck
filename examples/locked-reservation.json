@@ -1,0 +1,42 @@
+{
+  "name": "Locked inventory reservation",
+  "description": "Both stock and order updates are protected by one lock, making every explored terminal state consistent.",
+  "initial": {
+    "stock": 2,
+    "orders": 0
+  },
+  "locks": ["inventory"],
+  "actors": [
+    {
+      "id": "ada",
+      "steps": [
+        { "op": "acquire", "lock": "inventory", "label": "enter reservation" },
+        { "op": "read", "from": "stock", "into": "stockSeen" },
+        { "op": "write", "to": "stock", "value": { "sub": [{ "local": "stockSeen" }, 1] } },
+        { "op": "read", "from": "orders", "into": "ordersSeen" },
+        { "op": "write", "to": "orders", "value": { "add": [{ "local": "ordersSeen" }, 1] } },
+        { "op": "release", "lock": "inventory", "label": "leave reservation" }
+      ]
+    },
+    {
+      "id": "linus",
+      "steps": [
+        { "op": "acquire", "lock": "inventory", "label": "enter reservation" },
+        { "op": "read", "from": "stock", "into": "stockSeen" },
+        { "op": "write", "to": "stock", "value": { "sub": [{ "local": "stockSeen" }, 1] } },
+        { "op": "read", "from": "orders", "into": "ordersSeen" },
+        { "op": "write", "to": "orders", "value": { "add": [{ "local": "ordersSeen" }, 1] } },
+        { "op": "release", "lock": "inventory", "label": "leave reservation" }
+      ]
+    }
+  ],
+  "invariants": [
+    { "id": "stock-nonnegative", "condition": { "gte": [{ "shared": "stock" }, 0] } }
+  ],
+  "expect": {
+    "terminal": [
+      { "id": "stock-zero", "condition": { "eq": [{ "shared": "stock" }, 0] } },
+      { "id": "orders-two", "condition": { "eq": [{ "shared": "orders" }, 2] } }
+    ]
+  }
+}

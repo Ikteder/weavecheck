@@ -1,0 +1,49 @@
+{
+  "name": "Two shoppers, one remaining unit",
+  "description": "Two workers read the same inventory count before either writes. The model exposes the reachable lost update.",
+  "initial": {
+    "stock": 2,
+    "orders": 0
+  },
+  "actors": [
+    {
+      "id": "ada",
+      "steps": [
+        { "op": "read", "from": "stock", "into": "seen", "label": "read stock" },
+        { "op": "write", "to": "stock", "value": { "sub": [{ "local": "seen" }, 1] }, "label": "reserve one" },
+        { "op": "read", "from": "orders", "into": "ordersSeen", "label": "read order count" },
+        { "op": "write", "to": "orders", "value": { "add": [{ "local": "ordersSeen" }, 1] }, "label": "record order" }
+      ]
+    },
+    {
+      "id": "linus",
+      "steps": [
+        { "op": "read", "from": "stock", "into": "seen", "label": "read stock" },
+        { "op": "write", "to": "stock", "value": { "sub": [{ "local": "seen" }, 1] }, "label": "reserve one" },
+        { "op": "read", "from": "orders", "into": "ordersSeen", "label": "read order count" },
+        { "op": "write", "to": "orders", "value": { "add": [{ "local": "ordersSeen" }, 1] }, "label": "record order" }
+      ]
+    }
+  ],
+  "invariants": [
+    {
+      "id": "stock-nonnegative",
+      "message": "stock must never be negative",
+      "condition": { "gte": [{ "shared": "stock" }, 0] }
+    }
+  ],
+  "expect": {
+    "terminal": [
+      {
+        "id": "all-stock-reserved",
+        "message": "both reservations should reduce stock from 2 to 0",
+        "condition": { "eq": [{ "shared": "stock" }, 0] }
+      },
+      {
+        "id": "two-orders-recorded",
+        "message": "both completed workers should record an order",
+        "condition": { "eq": [{ "shared": "orders" }, 2] }
+      }
+    ]
+  }
+}
