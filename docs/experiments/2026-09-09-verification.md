@@ -34,7 +34,7 @@ The available in-app browser did not expose its viewport override capability, so
 
 ## CI correction
 
-The first public matrix run `34393252361` failed because `npm run verify` invoked the intentionally unsafe CLI demo. The CLI correctly returned `1`, but the package script treated that expected result as a failed verification command. The verification path was changed to an assertion script that requires the unsafe status and exact fixture metrics while still generating both reports. The CLI exit contract was not weakened.
+The first public matrix run `34393252361` failed because `npm run verify` invoked the intentionally unsafe CLI demo. The CLI correctly returned `1`, but the package script treated that expected result as a failed verification command. The verification path was changed to an assertion script that requires the unsafe status and exact fixture metrics while still generating both reports. The CLI exit contract was not weakened. Replacement run `34393430618` passed on Node.js 20, 22, and 24.
 
 ## Interpretation
 
@@ -42,4 +42,4 @@ The evidence confirms the implemented finite-state semantics and output paths fo
 
 ## Remaining verification
 
-The public CI matrix is recorded after publication. Narrow-viewport visual verification remains open because the local browser did not expose viewport emulation.
+Narrow-viewport visual verification remains open because the local browser did not expose viewport emulation.
